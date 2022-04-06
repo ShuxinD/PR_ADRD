@@ -11,5 +11,5 @@ dt[,`:=`(qid=NULL, sex=NULL, race=NULL, age=NULL, dual=NULL, statecode=NULL, dea
 
 dt <- unique(dt)
 dir_dataout <- "/nfs/home/S/shd968/shared_space/ci3_shd968/PR_ADRD/data/"
-write_fst(dt, paste0(dir_dataout, "all_covaraites.fst"))
+write_fst(dt, paste0(dir_dataout, "all_covariates.fst"))
 
