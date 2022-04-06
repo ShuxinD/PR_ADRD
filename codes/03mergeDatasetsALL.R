@@ -1,7 +1,7 @@
 #' Project: PR and ADRD medicare admission
 #' Code: merge all datasets together for analyses
 #' Input: all datasets
-#' Output: "finalDT.rds"
+#' Output: "final_dt.fst"
 #' Author: Shuxin Dong 
 
 ## 0. setup ----
