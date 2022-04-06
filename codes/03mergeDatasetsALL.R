@@ -1,5 +1,5 @@
 #' Project: PR and ADRD medicare admission
-#' Code: merge all datasets together for analyses
+#' Code: merge all datasets together for analyses, and deal with all missingness
 #' Input: all datasets
 #' Output: "final_dt.fst"
 #' Author: Shuxin Dong 
@@ -40,4 +40,4 @@ beta[,`:=`(X=NULL, zip=int_to_string_zip(zip))]
 dt <- merge(ADRD_count, beta, by.x = c("year", "zipcode_R"), by.y = c("year", "zip"))
 dt <- merge(dt, covariates, by.x = c("year", "zipcode_R"), by.y = c("year", "zip"))
 
-write_fst(dt, paste0(dir_data, "final_dt.fst"))
+write_fst(na.omit(dt), paste0(dir_data, "final_dt.fst"))
