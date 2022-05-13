@@ -63,4 +63,4 @@ dt # 613785
 
 na.omit(dt) # 379531
 
-write_fst(na.omit(dt), paste0(dir_data, "final_dt.fst"))
+write_fst(na.omit(dt), paste0(dirg_data, "final_dt.fst"))
