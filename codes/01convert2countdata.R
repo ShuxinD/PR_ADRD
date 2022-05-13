@@ -17,6 +17,15 @@ library(fst)
 # library(tigris)
 # library(sf)
 
+int_to_string_zip <- function(zipcode_number){
+  zip_raw <- as.character(zipcode_number)
+  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
+  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
+  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
+  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
+  return(zip_raw)
+}
+
 ## 1. load Medicare FFS admission record ----
 ADRDhosp <- NULL
 for (i in 2000:2016) {
