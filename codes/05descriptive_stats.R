@@ -22,5 +22,5 @@ dir_results <- "/nfs/home/S/shd968/shared_space/ci3_shd968/PR_ADRD/github_repo/r
 dt <- read_fst(paste0(dir_data,"final_dt.fst"), as.data.table = T)
 
 IQR(dt$beta)
-# 1.478348
+# 0.05247009
 
