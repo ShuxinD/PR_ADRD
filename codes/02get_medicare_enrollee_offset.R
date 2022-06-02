@@ -10,19 +10,11 @@ gc()
 
 library(fst)
 library(data.table)
+library(zipcodeR)
 
 setwd("/nfs/home/S/shd968/shared_space/ci3_shd968/PR_ADRD/")
 dir_denominator <- "/nfs/home/S/shd968/shared_space/ci3_health_data/medicare/mortality/1999_2016/wu/cache_data/merged_by_year_v2/"
 dir_dataout <- "/nfs/home/S/shd968/shared_space/ci3_shd968/PR_ADRD/data/"
-
-int_to_string_zip <- function(zipcode_number){
-  zip_raw <- as.character(zipcode_number)
-  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
-  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
-  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
-  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
-  return(zip_raw)
-}
 
 ## 1. load ---
 f <- list.files(dir_denominator, pattern = "\\.fst", full.names = TRUE)
@@ -50,8 +42,8 @@ f <- list.files(dir_denominator, pattern = "\\.fst", full.names = TRUE)
 # [58] "cluster_cat"                  "fips_no_interp"               "fips"                        
 # [61] "summer_tmmx"                  "summer_rmax"                  "winter_tmmx"                 
 # [64] "winter_rmax" 
-myvars <- c("qid", "year", "zip", "hmo_mo", "hmoind")
 
+myvars <- c("qid", "year", "zip", "hmo_mo", "hmoind")
 dt <- rbindlist(lapply(f[2:18],
                        read_fst,
                        columns = myvars,
@@ -59,11 +51,12 @@ dt <- rbindlist(lapply(f[2:18],
 gc()
 
 ## 2. subset and count ---
-dt_subset <- unique(dt[hmo_mo==0,.(qid, year, zip)])
-
+# dt_subset <- unique(dt[hmo_mo==0,.(qid, year, zip)])
+dt_subset <- unique(dt[,.(qid, year, zip)])
 final_dt <- dt_subset[,.N, by = c("year", "zip")]
+final_dt[,zip:=normalize_zip(zip)]
 gc()
 
-final_dt[,zip:=int_to_string_zip(zip)]
-
+head(final_dt)
+summary(final_dt)
 saveRDS(final_dt, paste0(dir_dataout, "medicare_enrollee_count.rds"))
