@@ -13,30 +13,39 @@ dir_data <- "/nfs/home/S/shd968/shared_space/ci3_shd968/PR_ADRD/data/"
 
 library(data.table)
 library(fst)
+library(zipcodeR)
 
-int_to_string_zip <- function(zipcode_number){
-  zip_raw <- as.character(zipcode_number)
-  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
-  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
-  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
-  zip_raw <- ifelse(nchar(zip_raw)<5, paste0("0",zip_raw), zip_raw)
-  return(zip_raw)
-}
+## 1. load covariates ----
+dir_covariates <- "~/shared_space/ci3_analysis/whanhee_revisions/data/confounders/"
+f <- list.files(dir_covariates, pattern = "\\.csv", full.names = TRUE)
+# temp <- fread(f[1], drop = 1)
+# colnames(temp)
+myvars <- c("ZIP", "year", "zcta", "poverty", "popdensity", "medianhousevalue", "pct_blk", "medhouseholdincome", "pct_owner_occ", "hispanic", "education", "smoke_rate", "mean_bmi", "pm25.one_year_lag")
+covariates <- rbindlist(lapply(f[2:17], 
+                               fread,
+                               select = myvars))
+# summary(all_covariates)
+unique(covariates)
+covariates[,ZIP:=normalize_zip(ZIP)][]
 
-## 1. load datasets -------------------------------------
+## 2. load other datasets ----
 ADRD_count <- readRDS(paste0(dir_data,"ADRD_zipcode_year.rds"))
-covariates <- read_fst(paste0(dir_data, "all_covariates.fst"))
-pop_count <- readRDS(paste0(dir_data,"medicare_enrollee_count.rds"))
+pcount <- readRDS(paste0(dir_data,"medicare_enrollee_count.rds"))
 load(paste0(dir_data,"zip_annual_SD.RData"))
 beta <- zip_annual
 rm(zip_annual)
+
 gc()
 
-head(ADRD_count)
-ADRD_count[,zipcode_R:=int_to_string_zip(zipcode_R)]
+## 3. prepare all datasets ----
+## ADRD hospitalization
+summary(ADRD_count)
+ADRD_count[,zipcode_R:=normalize_zip(zipcode_R)] # just in case
 names(ADRD_count)
 names(ADRD_count) <- c("year", "zipcode", "ADRDhosp")
 
+## all covariates
+summary(covariates)
 head(covariates)
 names(covariates)[1:2] <- c("zipcode", "year")
 
