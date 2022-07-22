@@ -1,5 +1,5 @@
 #' Project: particle radiation and ADRD admission in Medicare FFS
-#' Code: get medicare enrollee count by year by zip code
+#' Code: get medicare enrollee count by year by zcta
 #' Input: medicare denominator files
 #' Output: "medicare_enrollee_count.rds" as combination of zipcode and year
 #' Author: Shuxin Dong
@@ -12,11 +12,10 @@ library(fst)
 library(data.table)
 library(zipcodeR)
 
-setwd("/nfs/home/S/shd968/shared_space/ci3_shd968/PR_ADRD/")
 dir_denominator <- "/nfs/home/S/shd968/shared_space/ci3_health_data/medicare/mortality/1999_2016/wu/cache_data/merged_by_year_v2/"
-dir_dataout <- "/nfs/home/S/shd968/shared_space/ci3_shd968/PR_ADRD/data/"
+dir_dataout <- file.path(getwd(),"data")
 
-## 1. load ---
+## load denominator files---
 f <- list.files(dir_denominator, pattern = "\\.fst", full.names = TRUE)
 # example <- read_fst(f[1])
 # names(example)
